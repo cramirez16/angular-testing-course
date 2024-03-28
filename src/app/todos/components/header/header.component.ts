@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { TodosService } from '../../services/todos.service';
 
 @Component({
-  selector: 'app-header',
+  selector: 'app-todos-header',
   standalone: true,
   imports: [],
   templateUrl: './header.component.html',

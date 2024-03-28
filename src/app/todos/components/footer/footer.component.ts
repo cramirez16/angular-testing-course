@@ -4,7 +4,7 @@ import { TodosService } from '../../services/todos.service';
 import { FilterEnum } from '../../types/filter.enum';
 
 @Component({
-  selector: 'app-footer',
+  selector: 'app-todos-footer',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './footer.component.html',

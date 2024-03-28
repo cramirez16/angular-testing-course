@@ -1,12 +1,46 @@
-import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit, computed, inject } from '@angular/core';
+import { TodoComponent } from '../todo/todo.component';
+import { TodosService } from '../../services/todos.service';
+import { FilterEnum } from '../../types/filter.enum';
 
 @Component({
-  selector: 'app-main',
+  selector: 'app-todos-main',
   standalone: true,
-  imports: [],
+  imports: [CommonModule, TodoComponent],
   templateUrl: './main.component.html',
-  styleUrl: './main.component.css'
+  styleUrl: './main.component.css',
 })
-export class MainComponent {
+export class MainComponent implements OnInit {
+  todosService = inject(TodosService);
+  editingId: string | null = null;
 
+  visibleTodos = computed(() => {
+    const todos = this.todosService.todosSig();
+    const filter = this.todosService.filterSig();
+
+    if (filter === FilterEnum.active) {
+      return todos.filter((todo) => !todo.isCompleted);
+    } else if (filter === FilterEnum.completed) {
+      return todos.filter((todo) => todo.isCompleted);
+    }
+    return todos;
+  });
+  isAllTodosSelected = computed(() =>
+    this.todosService.todosSig().every((todo) => todo.isCompleted)
+  );
+  noTodosClass = computed(() => this.todosService.todosSig().length === 0);
+
+  ngOnInit(): void {
+    this.todosService.getTodos();
+  }
+
+  setEditingId(editingId: string | null): void {
+    this.editingId = editingId;
+  }
+
+  toggleAllTodos(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.todosService.toggleAll(target.checked);
+  }
 }
