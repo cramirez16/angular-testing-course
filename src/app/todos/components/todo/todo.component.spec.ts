@@ -1,9 +1,15 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  tick,
+} from '@angular/core/testing';
 import { TodoComponent } from './todo.component';
 import { TodosService } from '../../services/todos.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
 import { first } from 'rxjs';
+import { SimpleChange } from '@angular/core';
 
 describe('TodoComponent', () => {
   let component: TodoComponent;
@@ -78,5 +84,18 @@ describe('TodoComponent', () => {
       new KeyboardEvent('keyup', { key: 'Enter' })
     );
     expect(todosService.changeTodo).toHaveBeenCalledWith('1', 'foo');
+  });
+
+  it('should focus after editing activation', () => {
+    fakeAsync(() => {
+      component.isEditing = true;
+      component.ngOnChanges({
+        isEditing: new SimpleChange(false, true, false),
+      });
+      fixture.detectChanges();
+      tick();
+      const edit = fixture.debugElement.query(By.css(':focus'));
+      expect(edit).toBeTruthy();
+    });
   });
 });
